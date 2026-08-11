@@ -84,3 +84,47 @@ const ICON_PATHS = {
   if(document.body) inject();
   else document.addEventListener('DOMContentLoaded', inject);
 })();
+
+/* =========================================================================
+   Mobile sidebar toggle — auto-activates on pages with .sidebar or .pms-sidebar.
+   Injects a floating hamburger button + overlay; no HTML changes needed.
+   ========================================================================= */
+(function(){
+  function initSidebar(){
+    var sidebar = document.querySelector('.sidebar, .pms-sidebar');
+    if(!sidebar) return; // no sidebar on this page (dashboard, room-panel, bms-projects)
+
+    // Overlay
+    var overlay = document.createElement('div');
+    overlay.className = 'sb-overlay';
+    document.body.appendChild(overlay);
+
+    function open(){ sidebar.classList.add('open'); overlay.classList.add('show'); }
+    function close(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+    function toggle(){ sidebar.classList.contains('open') ? close() : open(); }
+
+    // Wire up existing toggle buttons (sanicorp topbar hamburger)
+    document.querySelectorAll('.topbar-toggle').forEach(function(b){
+      b.addEventListener('click', toggle);
+    });
+
+    // Inject floating toggle for pages without one (PMS pages)
+    if(!document.querySelector('.topbar-toggle') && !document.querySelector('.sb-toggle')){
+      var btn = document.createElement('button');
+      btn.className = 'sb-toggle';
+      btn.innerHTML = '<svg class="ic ic-20"><use href="#i-menu"/></svg>';
+      document.body.appendChild(btn);
+      btn.addEventListener('click', toggle);
+    }
+
+    overlay.addEventListener('click', close);
+
+    // Close sidebar when a nav link is clicked (mobile)
+    sidebar.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ if(window.innerWidth <= 768) setTimeout(close, 150); });
+    });
+  }
+
+  if(document.body) initSidebar();
+  else document.addEventListener('DOMContentLoaded', initSidebar);
+})();

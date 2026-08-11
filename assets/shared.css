@@ -80,3 +80,104 @@ svg.ic.ic-20{width:20px; height:20px}
 svg.ic.ic-24{width:24px; height:24px}
 svg.ic.ic-28{width:28px; height:28px}
 svg.ic.ic-fill{fill:currentColor; stroke:none}
+
+/* ===== Floating sidebar toggle (mobile only) ===== */
+.sb-toggle{
+  display:none;
+  align-items:center; justify-content:center;
+  position:fixed; top:8px; left:8px; z-index:101;
+  width:38px; height:38px; border-radius:8px;
+  background:rgba(255,255,255,.96); border:1px solid rgba(0,0,0,.12);
+  box-shadow:0 2px 8px rgba(0,0,0,.12); cursor:pointer;
+}
+.sb-overlay{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.45); z-index:99;
+}
+.sb-overlay.show{display:block}
+
+/* =========================================================================
+   MOBILE RESPONSIVE — all pages
+   Sidebars become slide-in drawers, multi-column layouts stack.
+   ========================================================================= */
+@media (max-width: 768px){
+  /* Back link moves right to make room for toggle */
+  .back-link{ font-size:11px; padding:5px 10px; top:9px; left:50px; max-width:calc(100% - 60px) }
+  .sb-toggle{ display:flex }
+
+  /* Sidebars → slide-in drawers */
+  .sidebar, .pms-sidebar{
+    position:fixed !important; left:0; top:0; bottom:0; z-index:100;
+    transform:translateX(-100%); transition:transform .25s ease;
+    box-shadow:4px 0 24px rgba(0,0,0,.2);
+  }
+  .sidebar.open, .pms-sidebar.open{ transform:translateX(0) }
+  .app, .pms-app{ display:block !important }
+  .main, .pms-main{ width:100% !important }
+
+  /* Content padding */
+  .content, .pms-content{ padding:14px !important }
+
+  /* Topbar compact */
+  .topbar, .pms-topbar{ padding:0 10px !important; gap:8px }
+  .topbar-search, .pms-topbar .input-pms{ display:none !important }
+  .breadcrumb{ font-size:11px !important; max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+  .topbar-btn, .btn-pms{ padding:5px 10px !important; font-size:11px !important }
+
+  /* Page headings */
+  .content h1, .pms-content h1, .section-head h1{ font-size:18px !important }
+
+  /* BMS designer sidebar hidden (not practical on phone) */
+  .designer-sidebar{ display:none !important }
+  .designer-body{ flex-direction:column !important }
+  .resizer{ display:none !important }
+  .designer-canvas{ width:100% !important }
+  .designer-header .titles .t2{ display:none }
+
+  /* Dashboard header compact */
+  .dashboard-header{ padding:0 14px !important; height:52px !important; gap:8px }
+  .dashboard-header .sidebar-brand span:not(.logo){ font-size:12px }
+  .dashboard-main{ padding:20px 14px !important }
+  .greeting-block h1{ font-size:22px !important }
+  .module-grid{ grid-template-columns:1fr !important; gap:12px !important }
+  .module-card{ padding:16px !important }
+  .stat-grid{ gap:10px !important }
+
+  /* BMS floor map page */
+  .stat-strip{ grid-template-columns:repeat(2,1fr) !important; gap:8px !important }
+  .bms-head{ padding:10px 14px !important }
+  .bms-head .titles .t2{ display:none }
+  .bms-head .btn{ font-size:11px !important; padding:5px 10px !important }
+  .bms-wrap{ padding:10px !important; gap:12px !important }
+  .map-card{ padding:10px !important }
+  .detail-panel{ position:static !important }
+  .mc-legend{ flex-wrap:wrap; gap:6px !important }
+
+  /* Billing receipt static */
+  .receipt{ position:static !important; padding:18px !important }
+
+  /* Room panel */
+  .room-panel-page{ padding:8px !important; padding-top:56px !important }
+  .room-panel{ width:100% !important; border-radius:20px !important; padding:18px !important }
+  .rp-time{ font-size:34px !important }
+  .rp-vitals{ gap:6px !important }
+  .rp-vital{ padding:10px !important }
+  .rp-vital .vval{ font-size:18px !important }
+  .rp-environment{ gap:8px !important }
+
+  /* Tables scroll */
+  .card-box, .card{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+  .tbl{ min-width:500px }
+  .tbl-trialbalance{ min-width:600px }
+
+  /* Hospital page KPIs */
+  .ord-status{ font-size:10px !important; padding:2px 7px !important }
+}
+
+/* Extra small phones */
+@media (max-width: 380px){
+  .stat-strip{ grid-template-columns:1fr !important }
+  .rp-vitals{ grid-template-columns:1fr !important }
+  .greeting-block h1{ font-size:19px !important }
+  .rp-vital .vval{ font-size:20px !important }
+}
