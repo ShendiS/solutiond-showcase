@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMS — Paneli i Dhomës Premium</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/pms.css">
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="room-panel-page">
+
+  <div style="position:fixed; top:14px; right:14px; background:rgba(255,255,255,.92); border:1px solid var(--outline-gray-2); padding:6px 12px; border-radius:8px; font-size:12px; color:var(--ink-gray-5); z-index:50; display:flex; align-items:center; gap:6px">
+    <svg class="ic ic-14" style="color:#e11d6b"><use href="#i-bed"/></svg> Dhomë 312 · Suita Premium · Etazhi 3
+  </div>
+
+  <div class="room-panel">
+
+    <!-- Clock -->
+    <div class="rp-header">
+      <div class="rp-time" id="clock">14:32</div>
+      <div class="rp-date" id="rdate">E hënë, 11 Gusht 2026</div>
+    </div>
+
+    <!-- Patient card -->
+    <div class="rp-patient">
+      <span class="pav">LB</span>
+      <div style="flex:1">
+        <div class="pname">Lulzim Berisha</div>
+        <div class="pmeta">68 vjet · P-3842 · Kardiologji · Nërecoverim</div>
+      </div>
+    </div>
+
+    <!-- Doctor -->
+    <div class="rp-doctor">
+      <div class="dav"><svg class="ic ic-20"><use href="#i-stethoscope"/></svg></div>
+      <div style="flex:1">
+        <div class="dname">Dr. Arbër Hoxha</div>
+        <div class="dspec">Mjek Kardiolog · Vizita: 15:30</div>
+      </div>
+      <button class="rp-call" id="callBtn"><svg class="ic ic-14"><use href="#i-bell"/></svg> Thirr Infermieren</button>
+    </div>
+
+    <!-- Vitals -->
+    <div class="rp-section-title">Vitalet (tani)</div>
+    <div class="rp-vitals">
+      <div class="rp-vital temp">
+        <div class="vlbl">Temp</div>
+        <div class="vval">36.8</div>
+        <div class="vunit">°C</div>
+      </div>
+      <div class="rp-vital hr">
+        <div class="vlbl">Puls</div>
+        <div class="vval">72</div>
+        <div class="vunit">bpm</div>
+      </div>
+      <div class="rp-vital spo2">
+        <div class="vlbl">SpO₂</div>
+        <div class="vval">98</div>
+        <div class="vunit">%</div>
+      </div>
+    </div>
+
+    <!-- Schedule -->
+    <div class="rp-section-title">Plani i Sotëm</div>
+    <div class="rp-schedule" id="schedule">
+      <div class="rp-sched-item done" data-time="08:00">
+        <div class="time">08:00</div>
+        <div class="what"><svg class="ic ic-14" style="color:#e11d6b;vertical-align:-2px"><use href="#i-pill"/></svg> Medikament: Atenolol 50mg (i marrë)</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="rp-sched-item done" data-time="09:30">
+        <div class="time">09:30</div>
+        <div class="what"><svg class="ic ic-14" style="color:#d97706;vertical-align:-2px"><use href="#i-utensils"/></svg> Mëngjes (dieta kardiologjike)</div>
+        <div class="check">✓</div>
+      </div>
+      <div class="rp-sched-item" data-time="12:00">
+        <div class="time">12:00</div>
+        <div class="what"><svg class="ic ic-14" style="color:#e11d6b;vertical-align:-2px"><use href="#i-pill"/></svg> Medikament: Aspirinë 100mg</div>
+        <div class="check"></div>
+      </div>
+      <div class="rp-sched-item" data-time="13:00">
+        <div class="time">13:00</div>
+        <div class="what"><svg class="ic ic-14" style="color:#d97706;vertical-align:-2px"><use href="#i-utensils"/></svg> Dreka</div>
+        <div class="check"></div>
+      </div>
+      <div class="rp-sched-item" data-time="15:30">
+        <div class="time">15:30</div>
+        <div class="what"><svg class="ic ic-14" style="color:#0891b2;vertical-align:-2px"><use href="#i-stethoscope"/></svg> Vizita me Dr. Hoxha</div>
+        <div class="check"></div>
+      </div>
+      <div class="rp-sched-item" data-time="18:00">
+        <div class="time">18:00</div>
+        <div class="what"><svg class="ic ic-14" style="color:#e11d6b;vertical-align:-2px"><use href="#i-pill"/></svg> Medikament: Atenolol 50mg</div>
+        <div class="check"></div>
+      </div>
+    </div>
+
+    <!-- Environment -->
+    <div class="rp-section-title" style="margin-top:18px">Mjedisi i Dhomës</div>
+    <div class="rp-environment">
+      <div class="rp-env-card">
+        <div class="ic" style="color:#d97706"><svg class="ic ic-24"><use href="#i-thermometer"/></svg></div>
+        <div class="lbl">Temperatura</div>
+        <div class="val">22.4°C</div>
+      </div>
+      <div class="rp-env-card">
+        <div class="ic" style="color:#eab308"><svg class="ic ic-24"><use href="#i-lightbulb"/></svg></div>
+        <div class="lbl">Ndriçimi (Calm)</div>
+        <div class="val">45%</div>
+      </div>
+    </div>
+
+    <div class="rp-quiet" id="quietMode">
+      <span><svg class="ic ic-18" style="color:#8b5cf6"><use href="#i-moon"/></svg></span>
+      <div>
+        <div style="font-weight:700">Mos Shqetësoni</div>
+        <div style="font-size:11px;color:var(--ink-gray-5);margin-top:2px">Pushoni — infermierja ju njofton kur të jetë koha</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast"><svg class="ic ic-18" style="vertical-align:-3px"><use href="#i-check"/></svg> Infermierja ka ardhur. Ju lutemi prisni pak.</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+// live clock
+function updateClock(){
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = hh+':'+mm;
+  const days = ['E diel','E hënë','E martë','E mërkurë','E enjte','E premte','E shtunë'];
+  const months = ['janar','shkurt','mars','prill','maj','qershor','korrik','gusht','shtator','tetor','nëntor','dhjetor'];
+  document.getElementById('rdate').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+updateClock(); setInterval(updateClock, 30000);
+
+// nurse call
+document.getElementById('callBtn').addEventListener('click', ()=>{
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 3000);
+});
+
+// schedule toggle
+document.querySelectorAll('.rp-sched-item').forEach(item=>{
+  item.querySelector('.check').addEventListener('click', ()=>{
+    item.classList.toggle('done');
+    item.querySelector('.check').textContent = item.classList.contains('done') ? '✓' : '';
+  });
+});
+
+// quiet mode toggle
+document.getElementById('quietMode').addEventListener('click', function(){
+  this.classList.toggle('active');
+});
+</script>
+
+</body>
+</html>

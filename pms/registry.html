@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMS — Regjistri i Pacientëve</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/pms.css">
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="pms-app">
+  <aside class="pms-sidebar">
+    <div class="pms-brand"><span class="logo">SD</span> Solution D Medical</div>
+    <a class="pms-back" href="../index.html"><svg class="ic ic-14"><use href="#i-layout-dashboard"/></svg> Paneli Kryesor</a>
+    <nav class="pms-nav">
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-layout-dashboard"/></svg> <span>Paneli</span></a>
+      <a class="pms-nav-item active"><svg class="ic ic-18"><use href="#i-users"/></svg> <span>Regjistri</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-folder"/></svg> <span>Kartela</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-calendar"/></svg> <span>Takime</span></a>
+      <a class="pms-nav-item" href="billing.html" style="margin-top:24px;border-top:1px solid var(--outline-gray-1);padding-top:14px"><svg class="ic ic-18"><use href="#i-dollar"/></svg> <span>Faturim Mjekësor</span></a>
+      <a class="pms-nav-item" href="room-panel.html"><svg class="ic ic-18"><use href="#i-bed"/></svg> <span>Paneli i Dhomës (Premium)</span></a>
+    </nav>
+    <div class="pms-user">
+      <div class="avatar">D</div>
+      <div><div style="font-size:13px;font-weight:600">Dr. Arbër Hoxha</div><div style="font-size:11px;color:var(--ink-gray-5)">Mjek</div></div>
+    </div>
+  </aside>
+
+  <div class="pms-main">
+    <div class="pms-topbar">
+      <div style="font-size:13px;color:var(--ink-gray-5)">Pacientët <span style="color:var(--ink-gray-3)">/</span> <b style="color:var(--ink-gray-9)">Regjistri</b></div>
+      <input class="input-pms" style="margin-left:auto;max-width:280px" placeholder="Kërko pacient...">
+      <button class="btn-pms"><svg class="ic ic-14"><use href="#i-plus"/></svg> Pacient i Ri</button>
+    </div>
+
+    <div class="pms-content">
+
+      <div class="section-head">
+        <div>
+          <h1>Regjistri i Pacientëve</h1>
+          <div class="sub">Lista e plotë e pacientëve të regjistruar.</div>
+        </div>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="kpi-grid cols-4">
+        <div class="kpi-card violet">
+          <div class="label">Total Pacientë</div>
+          <div class="value">3,842</div>
+          <div class="change up">↑ 12 këtë javë</div>
+        </div>
+        <div class="kpi-card emerald">
+          <div class="label">Aktiv</div>
+          <div class="value">3,650</div>
+          <div class="change up">95% e totalit</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="label">Të Rinj Sot</div>
+          <div class="value">7</div>
+          <div class="change up">↑ 3 vs dje</div>
+        </div>
+        <div class="kpi-card amber">
+          <div class="label">Në Pritje</div>
+          <div class="value">23</div>
+          <div class="change warn">5 emergjente</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card-box">
+        <div class="ct">Trendi — Pacientë të rinj (6 muajt e fundit)</div>
+        <svg id="chart" viewBox="0 0 600 220" style="width:100%; height:220px"></svg>
+      </div>
+
+      <!-- Patient list table -->
+      <div class="card-box" style="padding:0; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid var(--outline-gray-1); display:flex; align-items:center; justify-content:space-between">
+          <div class="ct" style="margin:0">Lista</div>
+          <input class="input-pms" style="max-width:240px" placeholder="Filter...">
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>ID</th><th>Pacienti</th><th>Datëlindja</th><th>Telefoni</th>
+                <th>Vizita e Fundit</th><th>Statusi</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+const PATIENTS = [
+  ['P-3842','Lulzim Berisha','14 Mars 1958','+383 44 123 456','8 Gusht 2026','Aktiv'],
+  ['P-3841','Edona Krasniqi','22 Shtator 1985','+383 44 234 567','7 Gusht 2026','Aktiv'],
+  ['P-3840','Bekim Gashi','03 Janar 1962','+383 44 345 678','5 Gusht 2026','Aktiv'],
+  ['P-3839','Donika Mustafa','18 Qershor 1990','+383 44 456 789','3 Gusht 2026','Pasiv'],
+  ['P-3838','Gjergj Shala','09 Nëntor 1948','+383 44 567 890','1 Gusht 2026','Aktiv'],
+  ['P-3837','Vlora Hoti','27 Korrik 1973','+383 44 678 901','30 Korrik 2026','Aktiv'],
+  ['P-3836','Erion Dervishi','11 Maj 1995','+383 44 789 012','28 Korrik 2026','Aktiv'],
+];
+
+function initials(name){
+  return name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+}
+
+function renderTable(){
+  document.getElementById('tbody').innerHTML = PATIENTS.map(p=>{
+    const statusCls = p[5]==='Aktiv' ? 'green' : 'slate';
+    return `<tr>
+      <td class="mono" style="font-family:ui-monospace,monospace;font-size:12px">${p[0]}</td>
+      <td><span class="pav">${initials(p[1])}</span>${p[1]}</td>
+      <td style="color:var(--ink-gray-5)">${p[2]}</td>
+      <td class="mono" style="font-family:ui-monospace,monospace;font-size:12px">${p[3]}</td>
+      <td style="color:var(--ink-gray-5)">${p[4]}</td>
+      <td><span class="pill ${statusCls}">${p[5]}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Chart (hand-drawn SVG bar chart)
+const CHART_DATA = [
+  {m:'Mar', v:18}, {m:'Pri', v:24}, {m:'Maj', v:31},
+  {m:'Qer', v:28}, {m:'Kor', v:35}, {m:'Gus', v:7},
+];
+function renderChart(){
+  const svg = document.getElementById('chart');
+  const W=600, H=220, padX=40, padTop=20, padBottom=40;
+  const max = Math.max(...CHART_DATA.map(d=>d.v)) * 1.15;
+  const barW = (W - padX*2) / CHART_DATA.length * 0.6;
+  const gap = (W - padX*2) / CHART_DATA.length;
+
+  // grid lines
+  let html = '';
+  for(let i=0; i<=4; i++){
+    const y = padTop + (H-padTop-padBottom) * (i/4);
+    const val = Math.round(max - max*(i/4));
+    html += `<line x1="${padX}" y1="${y}" x2="${W-padX}" y2="${y}" stroke="#EDEDED" stroke-width="1"/>`;
+    html += `<text x="${padX-6}" y="${y+3}" text-anchor="end" font-size="10" fill="#7C7C7C">${val}</text>`;
+  }
+  // bars
+  CHART_DATA.forEach((d,i)=>{
+    const h = (d.v/max) * (H-padTop-padBottom);
+    const x = padX + i*gap + (gap-barW)/2;
+    const y = H - padBottom - h;
+    html += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="4" fill="url(#barGrad)"/>`;
+    html += `<text x="${x+barW/2}" y="${H-padBottom+15}" text-anchor="middle" font-size="11" fill="#7C7C7C">${d.m}</text>`;
+    html += `<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-size="11" font-weight="700" fill="#8b5cf6">${d.v}</text>`;
+  });
+  // gradient def
+  html = `<defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a78bfa"/>
+  </linearGradient></defs>` + html;
+  svg.innerHTML = html;
+}
+
+renderTable();
+renderChart();
+</script>
+
+</body>
+</html>

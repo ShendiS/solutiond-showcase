@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenBMS — Designer</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/bms.css">
+</head>
+<body>
+
+<a class="back-link" href="../index.html" style="z-index:60"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="designer-page">
+
+  <!-- Header -->
+  <header class="designer-header">
+    <div class="logo">DM</div>
+    <div class="titles">
+      <div class="t1">Spitali Qendror — Kontrolli HVAC</div>
+      <div class="t2">Sistemi i Menaxhimit të Ndërtesës</div>
+    </div>
+    <span class="mqtt-status"><span class="dot green pulse"></span> I lidhur · MQTT</span>
+    <button class="btn btn-primary" style="margin-left:8px">⬆ Deploy</button>
+  </header>
+
+  <div class="designer-body">
+
+    <!-- Sidebar -->
+    <aside class="designer-sidebar">
+      <div class="designer-tabs">
+        <div class="designer-tab active" data-tab="controllers">Kontrollues</div>
+        <div class="designer-tab" data-tab="supervisors">Mbikëqyrës</div>
+      </div>
+      <div class="tree" id="tree"></div>
+    </aside>
+
+    <div class="resizer"></div>
+
+    <!-- Canvas with flow nodes + SVG edges -->
+    <div class="designer-canvas" id="canvas">
+
+      <svg id="edges" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+        <!-- edges will be injected -->
+      </svg>
+
+      <!-- Flow nodes -->
+      <div class="flow-node sensor" style="top:60px; left:40px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-map-pin"/></svg> Sensor</div>
+        <div class="fn-title">Temperatura Furnizuese</div>
+        <div class="fn-sub">AHU-1 · T-SUP</div>
+      </div>
+
+      <div class="flow-node sensor" style="top:200px; left:40px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-map-pin"/></svg> Sensor</div>
+        <div class="fn-title">Presioni Diferential</div>
+        <div class="fn-sub">Salla Operative · ΔP</div>
+      </div>
+
+      <div class="flow-node logic" style="top:120px; left:280px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-cpu"/></svg> Logic</div>
+        <div class="fn-title">PID Controller</div>
+        <div class="fn-sub">SP: 20.0 °C · Kp=2.0 · Ti=30s</div>
+      </div>
+
+      <div class="flow-node logic" style="top:280px; left:280px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-cpu"/></svg> Logic</div>
+        <div class="fn-title">CASCADE: Pressure</div>
+        <div class="fn-sub">SP: +45 Pa · trim Δ SP_T</div>
+      </div>
+
+      <div class="flow-node action" style="top:80px; left:560px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-settings"/><\/svg> Action</div>
+        <div class="fn-title">Valvula Ftohjes</div>
+        <div class="fn-sub">CHW-1 · 0-100% · BACnet AO</div>
+      </div>
+
+      <div class="flow-node action" style="top:220px; left:560px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-settings"/><\/svg> Action</div>
+        <div class="fn-title">VFD Ventilatori</div>
+        <div class="fn-sub">SF-1 · 30-100% · Modbus</div>
+      </div>
+
+      <div class="flow-node action" style="top:360px; left:560px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-settings"/><\/svg> Action</div>
+        <div class="fn-title">Alarmi i Presionit</div>
+        <div class="fn-sub">ΔP &lt; 40 Pa → ALARM</div>
+      </div>
+
+      <div class="flow-node io" style="top:160px; left:820px">
+        <div class="fn-type"><svg class="ic ic-12"><use href="#i-link"/><\/svg> Output</div>
+        <div class="fn-title">BACnet/IP Write</div>
+        <div class="fn-sub">Device 1234 · Obj 1-5</div>
+      </div>
+
+      <!-- honest caption -->
+      <div class="canvas-caption">
+        <b>Mbikëqyrës visual i sekuencave të kontrollit.</b> Ky është një dizajner konfigurimi për logjikën e kontrollit BMS — jo një dashboard live. Nyjet dhe lidhjet tregojnë rrjedhjen e të dhënave nga sensorët në aktuatorët përmes logjikës PID.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+// Sidebar tree data (controllers)
+const CONTROLLERS = [
+  {name:'AHU-1 · Operation Room', icon:'cpu', children:[
+    {name:'T-Supply (°C)', icon:'thermometer'},
+    {name:'T-Return (°C)', icon:'thermometer'},
+    {name:'RH-Supply (%)', icon:'droplet'},
+    {name:'ΔP Room (Pa)', icon:'gauge'},
+    {name:'CHW Valve (%)', icon:'settings'},
+    {name:'VFD Speed (%)', icon:'settings'},
+  ]},
+  {name:'AHU-2..4 · Operation Rooms', icon:'cpu', children:[
+    {name:'T-Supply', icon:'thermometer'},
+    {name:'ΔP Room (+45 Pa)', icon:'gauge'},
+    {name:'CHW Valve', icon:'settings'},
+  ]},
+  {name:'HP-1 Heat Pump', icon:'factory', children:[
+    {name:'Heat (kW)', icon:'zap'},
+    {name:'Cool (kW)', icon:'snowflake'},
+    {name:'CHW Supply T', icon:'thermometer'},
+  ]},
+  {name:'Medical Gas Manifold', icon:'droplet', children:[
+    {name:'O₂ Pressure', icon:'droplet'},
+    {name:'Vacuum Pressure', icon:'droplet'},
+    {name:'N₂O Pressure', icon:'droplet'},
+  ]},
+];
+
+const SUPERVISORS = [
+  {name:'BMS Server (Tier 1)', icon:'cpu', children:[
+    {name:'BACnet/IP :47808', icon:'wifi'},
+    {name:'MQTT broker', icon:'wifi'},
+  ]},
+  {name:'Plant Room Supervisor', icon:'settings', children:[
+    {name:'HP-1 / HP-2 lead-lag', icon:'zap'},
+    {name:'CHW/HW pumps', icon:'settings'},
+  ]},
+];
+
+function renderTree(data){
+  const t = document.getElementById('tree');
+  t.innerHTML = data.map(node=>`
+    <div class="tree-node"><svg class="ic ic-18"><use href="#i-${node.icon}"/></svg><span>${node.name}</span></div>
+    ${node.children ? `<div class="tree-children">
+      ${node.children.map(c=>`<div class="tree-node child"><svg class="ic ic-14"><use href="#i-${c.icon}"/></svg><span>${c.name}</span></div>`).join('')}
+    </div>` : ''}
+  `).join('');
+}
+
+// Tab switch
+document.querySelectorAll('.designer-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.designer-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    renderTree(tab.dataset.tab==='controllers' ? CONTROLLERS : SUPERVISORS);
+  });
+});
+
+// Edges: connect nodes via SVG paths
+// node positions (left, top) and dimensions approximated
+const EDGES = [
+  // [from-x, from-y, to-x, to-y, color]
+  // sensor T-Supply -> PID
+  [200, 80, 280, 145, '#0ea5e9'],
+  // sensor ΔP -> CASCADE
+  [200, 230, 280, 305, '#0ea5e9'],
+  // PID -> CHW Valve
+  [460, 145, 560, 105, '#e02020'],
+  // PID -> VFD
+  [460, 170, 560, 245, '#e02020'],
+  // CASCADE -> VFD
+  [460, 305, 560, 265, '#e02020'],
+  // CASCADE -> Alarm
+  [460, 320, 560, 385, '#e02020'],
+  // CHW Valve -> BACnet output
+  [720, 105, 820, 180, '#16a34a'],
+  // VFD -> BACnet output
+  [720, 245, 820, 195, '#16a34a'],
+];
+
+function renderEdges(){
+  const svg = document.getElementById('edges');
+  EDGES.forEach(e=>{
+    const [x1,y1,x2,y2,color] = e;
+    // bezier curve
+    const cx1 = x1 + (x2-x1)*0.5;
+    const cx2 = x1 + (x2-x1)*0.5;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M ${x1},${y1} C ${cx1},${y1} ${cx2},${y2} ${x2},${y2}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('opacity', '.7');
+    path.setAttribute('marker-end', 'url(#arrow)');
+    svg.appendChild(path);
+  });
+}
+
+renderTree(CONTROLLERS);
+renderEdges();
+</script>
+
+</body>
+</html>

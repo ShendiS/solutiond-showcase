@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMS — Faturim Mjekësor</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/pms.css">
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="pms-app">
+  <aside class="pms-sidebar">
+    <div class="pms-brand"><span class="logo">SD</span> Solution D Medical</div>
+    <a class="pms-back" href="../index.html"><svg class="ic ic-14"><use href="#i-layout-dashboard"/></svg> Paneli Kryesor</a>
+    <nav class="pms-nav">
+      <a class="pms-nav-item" href="registry.html"><svg class="ic ic-18"><use href="#i-layout-dashboard"/></svg> <span>Paneli</span></a>
+      <a class="pms-nav-item" href="registry.html"><svg class="ic ic-18"><use href="#i-users"/></svg> <span>Regjistri</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-folder"/></svg> <span>Kartela</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-calendar"/></svg> <span>Takime</span></a>
+      <a class="pms-nav-item active" style="margin-top:24px;border-top:1px solid var(--outline-gray-1);padding-top:14px"><svg class="ic ic-18"><use href="#i-dollar"/></svg> <span>Faturim Mjekësor</span></a>
+      <a class="pms-nav-item" href="room-panel.html"><svg class="ic ic-18"><use href="#i-bed"/></svg> <span>Paneli i Dhomës (Premium)</span></a>
+    </nav>
+    <div class="pms-user">
+      <div class="avatar">D</div>
+      <div><div style="font-size:13px;font-weight:600">Dr. Arbër Hoxha</div><div style="font-size:11px;color:var(--ink-gray-5)">Kardiolog</div></div>
+    </div>
+  </aside>
+
+  <div class="pms-main">
+    <div class="pms-topbar">
+      <div style="font-size:13px;color:var(--ink-gray-5)">Pacientët <span style="color:var(--ink-gray-3)">/</span> <b style="color:var(--ink-gray-9)">Faturim Mjekësor</b></div>
+      <button class="btn-pms" style="margin-left:auto" onclick="window.print()"><svg class="ic ic-14"><use href="#i-printer"/></svg> Printo Faturën</button>
+    </div>
+
+    <div class="pms-content">
+
+      <div class="section-head">
+        <div>
+          <h1>Faturim Mjekësor</h1>
+          <div class="sub">Krijo faturë për pacientin — zgjidh shërbimet dhe shiko faturën në kohë reale.</div>
+        </div>
+      </div>
+
+      <div class="billing-wrap">
+        <!-- LEFT: patient + service picker -->
+        <div class="billing-left">
+
+          <!-- Patient picker -->
+          <div class="card-box">
+            <div class="ct"><svg class="ic ic-18"><use href="#i-user"/></svg> Pacienti</div>
+            <div style="display:flex; align-items:center; gap:14px; padding:12px; background:var(--pms-primary-soft); border-radius:8px">
+              <span class="pav" style="width:48px;height:48px;font-size:18px;margin:0">LB</span>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:15px">Lulzim Berisha</div>
+                <div style="font-size:12px;color:var(--ink-gray-5);margin-top:3px">P-3842 · 68 vjet · Kardiologji · Marrëdhënie private</div>
+              </div>
+              <button class="btn-pms outline" style="font-size:12px">Ndrysho</button>
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div class="card-box">
+            <div class="ct" style="display:flex;justify-content:space-between;align-items:center">
+              <span><svg class="ic ic-18"><use href="#i-stethoscope"/></svg> Shërbimet Mjekësore</span>
+              <span style="font-size:12px;color:var(--ink-gray-5);font-weight:400">Kliko për të zgjedhur</span>
+            </div>
+            <div id="services"></div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: live receipt -->
+        <div class="billing-right">
+          <div class="receipt no-print-sibling">
+            <div class="r-header">
+              <div class="clinic">Solution D Medical</div>
+              <div class="clinic-sub">Klinika Specialiste · Prishtinë</div>
+              <div class="clinic-sub" style="margin-top:6px">NIPT: 812345678 · TVSH: NL123456789</div>
+            </div>
+            <div class="r-meta">
+              <div><b>Fatura Nr:</b> FAT-2026-0142</div>
+              <div><b>Data:</b> 11 Gusht 2026 · 14:32</div>
+              <div><b>Mjeku:</b> Dr. Arbër Hoxha (Kardiologji)</div>
+              <div><b>Pacienti:</b> Lulzim Berisha (P-3842)</div>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Pozicioni</th><th class="num">Sasi</th><th class="num">Çmimi</th><th class="num">Total</th></tr>
+              </thead>
+              <tbody id="rItems"></tbody>
+            </table>
+            <div class="r-totals" id="rTotals"></div>
+            <div class="r-footer">
+              Faturë e gjeneruar nga Solution D Medical PMS<br>
+              Ju falënderojmë për besimin! · Shërim të shpejtë.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+const SERVICES = [
+  {id:'konsultim', name:'Konsultim Kardiologjik', desc:'Vizitë kontrolli me specialist', price:50, qty:0, active:false},
+  {id:'ekg', name:'Elektrokardiogram (EKG)', desc:'Regjistrim i aktivitetit elektrik të zemrës', price:35, qty:0, active:false},
+  {id:'eco', name:'Ekokardiogram (Echo)', desc:'Ultrasound i zemrës me kolor doppler', price:120, qty:0, active:false},
+  {id:'holter', name:'Holter 24-orësh', desc:'Monitorim i EKG për 24 orë', price:90, qty:0, active:false},
+  {id:'stresitest', name:'Test i Stresit', desc:'EKG në benë të ecjes/papafingo', price:75, qty:0, active:false},
+  {id:'procedura', name:'Procedurë Mjekësore', desc:'Procedura diagnostike/terapeutike', price:180, qty:0, active:false},
+  {id:'lab', name:'Analiza Laboratorike (set)', desc:'Set i plotë i analizave të gjakut', price:65, qty:0, active:false},
+  {id:'medikamente', name:'Medikamente (furnizim)', desc:'Barnat e japura në klinikë', price:42, qty:0, active:false},
+];
+
+const TVSH_RATE = 0.20;
+
+function fmt(n){ return '€ ' + n.toFixed(2) }
+
+function renderServices(){
+  document.getElementById('services').innerHTML = SERVICES.map(s=>`
+    <div class="service-row ${s.active?'active':''}" data-id="${s.id}">
+      <div class="check">${s.active?'✓':''}</div>
+      <div class="name">${s.name}<div class="desc">${s.desc}</div></div>
+      <div class="qty" style="${s.active?'':'visibility:hidden'}">
+        <button data-act="dec">−</button>
+        <span>${s.qty}</span>
+        <button data-act="inc">+</button>
+      </div>
+      <div class="price">${fmt(s.price)}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.service-row').forEach(row=>{
+    const id = row.dataset.id;
+    const s = SERVICES.find(x=>x.id===id);
+    row.querySelector('.check').addEventListener('click', e=>{
+      e.stopPropagation();
+      s.active = !s.active;
+      s.qty = s.active ? 1 : 0;
+      renderServices(); renderReceipt();
+    });
+    row.querySelectorAll('.qty button').forEach(b=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        const act = b.dataset.act;
+        if(act==='inc') s.qty++;
+        else s.qty = Math.max(1, s.qty-1);
+        renderServices(); renderReceipt();
+      });
+    });
+  });
+}
+
+function renderReceipt(){
+  const active = SERVICES.filter(s=>s.active && s.qty>0);
+  const rows = active.map(s=>{
+    const line = s.price * s.qty;
+    return `<tr>
+      <td>${s.name}</td>
+      <td class="num">${s.qty}</td>
+      <td class="num">${fmt(s.price)}</td>
+      <td class="num">${fmt(line)}</td>
+    </tr>`;
+  });
+  document.getElementById('rItems').innerHTML = rows.length ? rows.join('')
+    : '<tr><td colspan="4" style="text-align:center;color:#999;padding:20px">Zgjidh një shërbim...</td></tr>';
+
+  const subtotal = active.reduce((s,x)=>s + x.price*x.qty, 0);
+  const tvsh = subtotal * TVSH_RATE;
+  const total = subtotal + tvsh;
+
+  document.getElementById('rTotals').innerHTML = `
+    <div class="row"><span>Nëntotali</span><span>${fmt(subtotal)}</span></div>
+    <div class="row"><span>TVSH (20%)</span><span>${fmt(tvsh)}</span></div>
+    <div class="row grand"><span>TOTALI</span><span>${fmt(total)}</span></div>
+  `;
+}
+
+renderServices();
+renderReceipt();
+</script>
+
+</body>
+</html>

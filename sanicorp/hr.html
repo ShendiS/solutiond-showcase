@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANICORP — Burime Njerëzore</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/sanicorp.css">
+<link rel="stylesheet" href="../assets/pms.css">
+<style>
+  /* HR-specific: org-tree style + payroll summary */
+  .org-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:20px}
+  .dept-card{background:var(--surface-white); border:1px solid var(--outline-gray-1); border-radius:8px; padding:14px}
+  .dept-card .dh{display:flex; align-items:center; gap:8px; font-weight:700; font-size:13px; margin-bottom:10px}
+  .dept-card .dh .dot{width:10px; height:10px; border-radius:3px}
+  .dept-card .cnt{font-size:24px; font-weight:700; letter-spacing:-.5px}
+  .dept-card .sub{font-size:11px; color:var(--ink-gray-5); margin-top:2px}
+  .leave-bar{height:6px; background:var(--surface-gray-3); border-radius:3px; overflow:hidden; margin-top:8px}
+  .leave-bar-fill{height:100%; background:var(--success-green)}
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo">SD</span> Solution D Medical</div>
+    <a class="sidebar-modules-link" href="../index.html"><svg class="ic ic-14"><use href="#i-layout-dashboard"/></svg> Paneli Kryesor</a>
+    <nav class="pms-nav" style="padding:8px 0; flex:1; overflow-y:auto">
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-layout-dashboard"/></svg> <span>Paneli</span></a>
+      <a class="pms-nav-item active"><svg class="ic ic-18"><use href="#i-users"/></svg> <span>Punonjësit</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-calendar"/></svg> <span>Lejet</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-dollar"/></svg> <span>Pagat</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-building"/></svg> <span>Organigrama</span></a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar">SA</div><div class="info"><div class="n">Staf Administrativ</div><div class="r">HR Manager</div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-toggle"><svg class="ic ic-18"><use href="#i-menu"/></svg></div>
+      <div class="breadcrumb">
+        <span class="crumb">Burime Njerëzore</span><span class="sep">/</span>
+        <span class="crumb active">Punonjësit</span>
+      </div>
+      <input class="topbar-search" placeholder="Kërko...">
+      <button class="topbar-btn"><svg class="ic ic-14"><use href="#i-plus"/></svg> Punonjës i Ri</button>
+    </div>
+
+    <div class="content">
+
+      <div class="section-head" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:14px">
+        <div>
+          <h1 style="font-size:22px;font-weight:700">Burime Njerëzore</h1>
+          <div style="color:var(--ink-gray-5);font-size:13px;margin-top:4px">Punonjësit, lejet, pagat dhe struktura organizative.</div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="stat-grid cols-4">
+        <div class="stat-card" style="border-left:3px solid var(--accent-blue)"><div class="label">Punonjës aktiv</div><div class="value">84</div><div class="change up">↑ 3 të rinj këtë muaj</div></div>
+        <div class="stat-card" style="border-left:3px solid var(--success-green)"><div class="label">Në punë sot</div><div class="value">79</div><div class="change up">94% prania</div></div>
+        <div class="stat-card" style="border-left:3px solid var(--warning-amber)"><div class="label">Në leje</div><div class="value">5</div><div class="change" style="color:var(--warning-amber)">2 vjetore · 3 mjekësore</div></div>
+        <div class="stat-card" style="border-left:3px solid #7c3aed"><div class="label">Fondi i pagave (muaj)</div><div class="value" style="font-size:22px">€84,520</div><div class="change up">pagesa në 25-tën</div></div>
+      </div>
+
+      <!-- Departments -->
+      <div class="card-box" style="background:var(--surface-white);border:1px solid var(--outline-gray-1);border-radius:8px;padding:18px;margin-bottom:20px">
+        <div class="card-title">Struktura Organizative</div>
+        <div class="org-grid" id="orgGrid"></div>
+      </div>
+
+      <!-- Employees table -->
+      <div class="card-box" style="background:var(--surface-white);border:1px solid var(--outline-gray-1);border-radius:8px;padding:0;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--outline-gray-1);display:flex;align-items:center;justify-content:space-between">
+          <div class="card-title" style="margin:0">Lista e Punonjësve</div>
+          <input class="input" style="max-width:240px" placeholder="Filter...">
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>Punonjësi</th><th>Drejtori</th><th>Pozicioni</th><th>Paga (€)</th><th>Prania sot</th><th>Statusi</th></tr></thead>
+            <tbody id="empBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+const DEPTS = [
+  {name:'Administrimi', color:'#2563eb', count:8, leave:1},
+  {name:'Financa/Kontabiliteti', color:'#059669', count:12, leave:0},
+  {name:'Prokurimi', color:'#d97706', count:9, leave:2},
+  {name:'Magazina', color:'#7c3aed', count:14, leave:1},
+  {name:'Shitjet', color:'#db2777', count:18, leave:1},
+  {name:'Klinika/Spitali', color:'#0891b2', count:23, leave:0},
+];
+document.getElementById('orgGrid').innerHTML = DEPTS.map(d=>`
+  <div class="dept-card">
+    <div class="dh"><span class="dot" style="background:${d.color}"></span>${d.name}</div>
+    <div class="cnt">${d.count}</div>
+    <div class="sub">punonjës · ${d.leave} në leje</div>
+    <div class="leave-bar"><div class="leave-bar-fill" style="width:${(d.count-d.leave)/d.count*100}%"></div></div>
+  </div>
+`).join('');
+
+const EMP = [
+  ['P-0142','Dr. Arbër Hoxha','Klinika','Kardiolog',4200,'14:02','Aktiv'],
+  ['P-0141','Edona Krasniqi','Financa','Kontabiliste',1450,'08:30','Aktiv'],
+  ['P-0140','Bekim Gashi','Magazina','Magazinier',850,'08:15','Aktiv'],
+  ['P-0139','Donika Mustafa','Shitjet','Agjent Shitjesh',1100,'09:00','Aktiv'],
+  ['P-0138','Gjergj Shala','Prokurimi','Oficer Prokurimi',1250,'—','Në leje'],
+  ['P-0137','Vlora Hoti','Administrimi','HR Specialist',1300,'08:45','Aktiv'],
+  ['P-0136','Erion Dervishi','Klinika','Infermier',920,'07:30','Aktiv'],
+];
+function ini(n){return n.split(' ').map(x=>x[0]).join('').slice(0,2)}
+document.getElementById('empBody').innerHTML = EMP.map(e=>{
+  const st = e[6]==='Aktiv'?'<span class="pill green"><span class="dot green"></span>'+e[6]+'</span>'
+                            :'<span class="pill amber"><span class="dot amber"></span>'+e[6]+'</span>';
+  return `<tr>
+    <td class="mono">${e[0]}</td>
+    <td><span class="pav">${ini(e[1])}</span>${e[1]}</td>
+    <td style="color:var(--ink-gray-5)">${e[2]}</td>
+    <td>${e[3]}</td>
+    <td class="mono" style="text-align:right">€ ${e[4].toLocaleString('sq-AL')}</td>
+    <td class="mono">${e[5]}</td>
+    <td>${st}</td>
+  </tr>`;
+}).join('');
+</script>
+</body>
+</html>

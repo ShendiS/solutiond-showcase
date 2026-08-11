@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solution D Medical — Paneli Kryesor</title>
+<link rel="stylesheet" href="assets/shared.css">
+<link rel="stylesheet" href="assets/sanicorp.css">
+</head>
+<body class="dashboard-page">
+
+<!-- Header -->
+<header class="dashboard-header">
+  <div class="sidebar-brand">
+    <span class="logo">SD</span>
+    <span>Solution D Medical</span>
+  </div>
+  <span style="color:var(--ink-gray-4); font-size:12px; margin-left:auto">Spitali &amp; Platforma</span>
+  <div class="sidebar-user" style="padding:0; border:none;">
+    <div class="info" style="text-align:right">
+      <div class="n" style="font-size:13px; font-weight:600">Staf Administrativ</div>
+      <div class="r" style="font-size:11px">Administrator</div>
+    </div>
+    <div class="avatar">SA</div>
+  </div>
+</header>
+
+<main class="dashboard-main">
+
+  <!-- Greeting -->
+  <div class="greeting-block">
+    <div>
+      <div class="date" id="dateStr">E hënë, 11 gusht 2026</div>
+      <h1 id="greetTitle">Mirëdita</h1>
+      <div class="sub">Qendra e komandës për menaxhimin e distribucionit mjekësor, operacioneve spitalore dhe automacionit të ndërtesës.</div>
+    </div>
+    <span class="pill blue"><span class="dot blue pulse"></span>Administrator</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid cols-3">
+    <div class="stat-card">
+      <div class="label">Modulet në dispozicion</div>
+      <div class="value">6</div>
+      <div class="change up">↑ Të gjitha modulet aktive</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Sesioni</div>
+      <div class="value" style="font-size:16px; padding-top:8px">demo · të dhëna mostre</div>
+      <div class="change">Aktiv · 14:32</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Statusi i platformës</div>
+      <div class="value" style="display:flex; align-items:center; gap:10px; font-size:22px">
+        <span class="dot green pulse"></span> Aktive
+      </div>
+      <div class="change up">Të gjitha shërbimet funksionale</div>
+    </div>
+  </div>
+
+  <!-- Modules -->
+  <h2 style="font-size:18px; font-weight:700; margin:32px 0 4px; display:flex; align-items:baseline; gap:10px">
+    Modulet
+    <span style="font-size:13px; color:var(--ink-gray-5); font-weight:500">6 module</span>
+  </h2>
+
+  <div class="module-grid">
+
+    <a class="module-card" href="sanicorp/accounting.html">
+      <div class="icon" style="background:var(--m-erp)"><svg class="ic ic-24"><use href="#i-calculator"/></svg></div>
+      <div class="label">ERP Medical</div>
+      <div class="desc">Kontabilitet, financa, raporte zyrtare dhe bilanc i plotë.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+    <a class="module-card" href="bms/projects.html">
+      <div class="icon" style="background:var(--m-bms)"><svg class="ic ic-24"><use href="#i-factory"/></svg></div>
+      <div class="label">Building Management</div>
+      <div class="desc">Hartë e ndërtesës me pajisje të klikueshme, mbikëqyrje HV/AC dhe kontroll ambienti.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+    <a class="module-card" href="sanicorp/hospital.html">
+      <div class="icon" style="background:var(--m-hospital)"><svg class="ic ic-24"><use href="#i-hospital"/></svg></div>
+      <div class="label">Hospital Operations</div>
+      <div class="desc">Operacionet spitalore, kërkesat për stok dhe ndjekja e porosive.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+    <a class="module-card" href="sanicorp/hr.html">
+      <div class="icon" style="background:var(--m-hr)"><svg class="ic ic-24"><use href="#i-users"/></svg></div>
+      <div class="label">Burime Njerëzore</div>
+      <div class="desc">Punonjësit, lejet, pagat dhe struktura organizative.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+    <a class="module-card" href="pms/registry.html">
+      <div class="icon" style="background:var(--m-patients)"><svg class="ic ic-24"><use href="#i-user"/></svg></div>
+      <div class="label">Pacientët</div>
+      <div class="desc">Regjistri i pacientëve, kartelat shëndetësore dhe takimet.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+    <a class="module-card" href="pms/billing.html">
+      <div class="icon" style="background:var(--m-clinical)"><svg class="ic ic-24"><use href="#i-file-text"/></svg></div>
+      <div class="label">Klinik / EMR</div>
+      <div class="desc">Dosja elektronike shëndetësore, recetat dhe ekzaminimet.</div>
+      <div class="footer">
+        <span class="status"><span class="dot green"></span> Aktiv</span>
+        <span class="arrow"><svg class="ic ic-18"><use href="#i-arrow-right"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <footer style="margin-top:60px; padding-top:24px; border-top:1px solid var(--outline-gray-1); font-size:12px; color:var(--ink-gray-5); text-align:center">
+    © 2026 Solution D Medical · Platformë ERP për shpërndarje pajisjesh mjekësore · Demo me të dhëna mostre
+  </footer>
+
+</main>
+
+<script src="assets/icons.js"></script>
+<script>
+const days = ['E diel','E hënë','E martë','E mërkurë','E enjte','E premte','E shtunë'];
+const months = ['janar','shkurt','mars','prill','maj','qershor','korrik','gusht','shtator','tetor','nëntor','dhjetor'];
+const d = new Date();
+document.getElementById('dateStr').textContent =
+  days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+// Time-based greeting, no name
+const h = d.getHours();
+const g = h < 12 ? 'Mirëmëngjesi' : (h < 17 ? 'Mirëdita' : 'Mirëmbrëma');
+document.getElementById('greetTitle').textContent = g;
+</script>
+
+</body>
+</html>

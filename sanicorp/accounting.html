@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANICORP — Kontabiliteti</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/sanicorp.css">
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo">SD</span> Solution D Medical</div>
+    <a class="sidebar-modules-link" href="../index.html"><svg class="ic ic-14"><use href="#i-layout-dashboard"/></svg> Paneli Kryesor</a>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-user">
+      <div class="avatar">S</div><div class="info"><div class="n">Shend Sanaja</div><div class="r">Kontabilist</div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-toggle"><svg class="ic ic-18"><use href="#i-menu"/></svg></div>
+      <div class="breadcrumb">
+        <span class="crumb">ERP Medical</span><span class="sep">/</span>
+        <span class="crumb">Kontabiliteti</span><span class="sep">/</span>
+        <span class="crumb active">Përmbledhje</span>
+      </div>
+      <input class="topbar-search" placeholder="Kërko... (⌘K)">
+      <button class="topbar-btn"><svg class="ic ic-14"><use href="#i-plus"/></svg> I Ri</button>
+    </div>
+
+    <div class="content">
+
+      <h1 style="font-size:22px; font-weight:700; margin-bottom:4px">Kontabiliteti — Përmbledhje</h1>
+      <p style="color:var(--ink-gray-5); font-size:13px; margin-bottom:24px">Pasqyra e përgjithshme e gjendjes kontabile dhe raporteve zyrtare.</p>
+
+      <!-- Raporte zyrtare panel -->
+      <div class="acct-panel indigo-tint">
+        <h3><svg class="ic ic-18"><use href="#i-book-open"/></svg> Raporte zyrtare</h3>
+        <div class="acct-link-grid">
+          <button class="acct-link-btn"><svg class="ic ic-14" style="color:#6366f1"><use href="#i-file-text"/></svg>Libri i Shitjes</button>
+          <button class="acct-link-btn"><svg class="ic ic-14" style="color:#6366f1"><use href="#i-file-text"/></svg>Libri i Blerjes</button>
+          <button class="acct-link-btn"><svg class="ic ic-14" style="color:#6366f1"><use href="#i-bar-chart"/></svg>Deklarata TVSh</button>
+          <button class="acct-link-btn"><svg class="ic ic-14" style="color:#6366f1"><use href="#i-dollar"/></svg>Cash Flow SNRF</button>
+          <button class="acct-link-btn"><svg class="ic ic-14" style="color:#6366f1"><use href="#i-clipboard"/></svg>Klasifikimet zyrtare</button>
+        </div>
+      </div>
+
+      <!-- Periudhat e hapura -->
+      <div class="acct-panel">
+        <h3><svg class="ic ic-18"><use href="#i-calendar"/></svg> Periudhat e Hapura</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="status-badge ok">Qershor 2026 · 01.06–30.06</span>
+          <span class="status-badge ok">Korrik 2026 · 01.07–31.07</span>
+          <span class="status-badge warn">Gusht 2026 · 01.08–31.08 (Aktive)</span>
+        </div>
+      </div>
+
+      <!-- Status stat cards -->
+      <div class="stat-grid cols-4">
+        <div class="stat-card" style="border-left:3px solid var(--warning-amber)">
+          <div class="label">Pa Postuar / total</div>
+          <div class="value" style="color:var(--warning-amber)">12</div>
+          <div class="change" style="color:var(--warning-amber)">Kërkon vëmendje</div>
+        </div>
+        <div class="stat-card" style="border-left:3px solid var(--danger-red)">
+          <div class="label">Dështuar / total</div>
+          <div class="value" style="color:var(--danger-red)">0</div>
+          <div class="change up">Të gjitha OK</div>
+        </div>
+        <div class="stat-card" style="border-left:3px solid var(--success-green)">
+          <div class="label">Periudha të Hapura</div>
+          <div class="value">3</div>
+          <div class="change">2 të mbyllura</div>
+        </div>
+        <div class="stat-card" style="border-left:3px solid #6366f1">
+          <div class="label">Llogari në Bilancin Provues</div>
+          <div class="value">142</div>
+          <div class="change up">12 të reja këtë muaj</div>
+        </div>
+      </div>
+
+      <!-- Trial balance table -->
+      <div class="card" style="padding:0; overflow:hidden">
+        <div style="padding:16px 18px; border-bottom:1px solid var(--outline-gray-1); display:flex; justify-content:space-between; align-items:center">
+          <h3 style="font-size:14px; font-weight:700"><svg class="ic ic-18"><use href="#i-bar-chart"/></svg> Bilanci Provues — Pasqyrë</h3>
+          <span style="font-size:12px; color:var(--ink-gray-5)">Periudha: Gusht 2026</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl tbl-trialbalance">
+            <thead>
+              <tr>
+                <th>Kodi</th><th>Llogaria</th><th>Tipi</th>
+                <th style="text-align:right">Debi</th><th style="text-align:right">Kredi</th><th style="text-align:right">Balanci</th>
+              </tr>
+            </thead>
+            <tbody id="tbBody"></tbody>
+            <tfoot id="tbFoot"></tfoot>
+          </table>
+        </div>
+        <div style="padding:10px 18px; background:var(--surface-gray-1); font-size:12px; color:var(--ink-gray-5); border-top:1px solid var(--outline-gray-1)">
+          Duke shfaqur 12 nga 142 llogari · <a style="color:var(--accent-blue); cursor:pointer">Shiko të gjitha →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+const SECTIONS = [
+  {label:'Inventari', icon:'box', items:['Paneli','Stock Profiler','Rregullime Stoku']},
+  {label:'Furnizimi', icon:'truck', items:['Paneli','Furnitorët','Porosi Blerje','Dogana','Fletë Hyrje','Fatura Blerje']},
+  {label:'Shitjet', icon:'dollar', items:['Paneli','Ofertat','Faturat','Fletë Dalje','Konsignim']},
+  {label:'Tenderët', icon:'clipboard', items:['Lista','Tender i Ri','Rekomandimet']},
+  {label:'Klientët', icon:'handshake', items:['Lista e Klientëve']},
+  {label:'Artikuj', icon:'tag', items:['Paneli','Të Thjeshtë','Të Përbërë','Shërbime','Asete']},
+  {label:'Pagesat', icon:'wallet', items:['Paneli','Llogaritë','Hyrje/Dalje','Bankat','Shpenzime']},
+  {label:'Raporte Financiare', icon:'bar-chart', items:['Bilanci Provues','Fitim & Humbje','Bilanci i Gjendjes','AR Moshimi','AP Moshimi','Log Postimi','Auditimi']},
+  {label:'Kontabiliteti', icon:'calculator', items:['Përmbledhje','Ditarët','Radhë GL','Amortizimi','TVSH Deklarata','Periudhat','Plani i Llogarive','Hartimet'], active:true, activeItem:'Përmbledhje'},
+  {label:'Administrimi', icon:'settings', items:['Përdoruesit','Organigrama','Kompania']},
+];
+
+function renderSidebar(){
+  const nav = document.getElementById('sidebarNav');
+  SECTIONS.forEach(s=>{
+    const sec = document.createElement('div');
+    sec.className = 'nav-section' + (s.active ? ' open' : '');
+    sec.innerHTML = `
+      <div class="nav-section-head"><svg class="ic ic-14"><use href="#i-${s.icon}"/></svg><span>${s.label}</span><svg class="ic chev" style="margin-left:auto;width:12px;height:12px"><use href="#i-chevron-right"/></svg></div>
+      <div class="nav-section-items">
+        ${s.items.map(it=>`<a class="nav-item ${s.active && s.activeItem===it ? 'active':''}">${it}</a>`).join('')}
+      </div>`;
+    sec.querySelector('.nav-section-head').addEventListener('click',()=>sec.classList.toggle('open'));
+    nav.appendChild(sec);
+  });
+}
+
+// Trial balance data — realistic Albanian chart of accounts
+const ACCOUNTS = [
+  ['1010','Arkë në bankë','Aktiv', 485200.00, 0, 'D'],
+  ['1020','Arkë e zyrës (cash)','Aktiv', 18450.00, 0, 'D'],
+  ['1110','Klientët (të ardhurat)','Aktiv', 312450.80, 0, 'D'],
+  ['1210','Stoku i mallrave','Aktiv', 248900.00, 0, 'D'],
+  ['1310','Asete fikse (pajisje)','Aktiv', 1240000.00, 0, 'D'],
+  ['1320','Amortizimi i akumuluar','Aktiv', 0, 348200.00, 'K'],
+  ['2010','Furnitorët','Detyrim', 0, 198400.50, 'K'],
+  ['2020','TVSH e papaguar','Detyrim', 0, 34520.00, 'K'],
+  ['2030','Kredi afatshkurtra','Detyrim', 0, 180000.00, 'K'],
+  ['3010','Kapitali aksionar','Kapital', 0, 1000000.00, 'K'],
+  ['3020','Rezerva e akumuluar','Kapital', 0, 456200.00, 'K'],
+  ['4010','Të ardhurat nga shitjet','Të Ardhura', 0, 892400.00, 'K'],
+  ['5010','Kostoja e mallit të shitur','Shpenzim', 524800.00, 0, 'D'],
+  ['5020','Paga dhe shërbime','Shpenzim', 184200.00, 0, 'D'],
+  ['5030','Shpenzime administrative','Shpenzim', 84600.00, 0, 'D'],
+];
+
+function fmt(n){
+  return n.toLocaleString('sq-AL', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function renderTB(){
+  const body = document.getElementById('tbBody');
+  let tDebi=0, tKredi=0;
+  ACCOUNTS.forEach(a=>{
+    const bal = a[5]==='D' ? a[3]-a[4] : a[4]-a[3];
+    tDebi += a[3]; tKredi += a[4];
+    const typeBadge = {
+      'Aktiv':'<span class="pill blue">Aktiv</span>',
+      'Detyrim':'<span class="pill amber">Detyrim</span>',
+      'Kapital':'<span class="pill violet">Kapital</span>',
+      'Të Ardhura':'<span class="pill green">Të Ardhura</span>',
+      'Shpenzim':'<span class="pill red">Shpenzim</span>',
+    }[a[2]];
+    const negClass = bal < 0 ? 'neg' : '';
+    body.innerHTML += `<tr>
+      <td class="mono">${a[0]}</td>
+      <td>${a[1]}</td>
+      <td>${typeBadge}</td>
+      <td class="num">${a[3] ? fmt(a[3]) : '—'}</td>
+      <td class="num">${a[4] ? fmt(a[4]) : '—'}</td>
+      <td class="num ${negClass}">${fmt(bal)}</td>
+    </tr>`;
+  });
+  document.getElementById('tbFoot').innerHTML = `<tr>
+    <td colspan="3" style="text-align:right; font-size:12px; color:var(--ink-gray-5); text-transform:uppercase">TOTALI</td>
+    <td class="num">${fmt(tDebi)}</td>
+    <td class="num">${fmt(tKredi)}</td>
+    <td class="num">${fmt(tDebi-tKredi)}</td>
+  </tr>`;
+}
+
+renderSidebar();
+renderTB();
+</script>
+
+</body>
+</html>

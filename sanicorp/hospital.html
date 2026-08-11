@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANICORP — Operacionet Spitalore</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/sanicorp.css">
+<link rel="stylesheet" href="../assets/pms.css">
+<style>
+  .ord-status{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600}
+  .ord-status.req{background:var(--accent-blue-soft);color:var(--accent-blue)}
+  .ord-status.pick{background:var(--warning-amber-soft);color:var(--warning-amber)}
+  .ord-status.sent{background:var(--success-green-soft);color:var(--success-green)}
+  .progress-mini{height:4px;background:var(--surface-gray-3);border-radius:2px;overflow:hidden;margin-top:6px}
+  .progress-mini-fill{height:100%;background:var(--accent-blue)}
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo">SD</span> Solution D Medical</div>
+    <a class="sidebar-modules-link" href="../index.html"><svg class="ic ic-14"><use href="#i-layout-dashboard"/></svg> Paneli Kryesor</a>
+    <nav class="pms-nav" style="padding:8px 0;flex:1;overflow-y:auto">
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-activity"/></svg> <span>Operacionet</span></a>
+      <a class="pms-nav-item active"><svg class="ic ic-18"><use href="#i-clipboard"/></svg> <span>Kërkesë Stoku</span></a>
+      <a class="pms-nav-item"><svg class="ic ic-18"><use href="#i-truck"/></svg> <span>Porositë</span></a>
+    </nav>
+    <div class="sidebar-user"><div class="avatar">DR</div><div class="info"><div class="n">Dept. i Spitalit</div><div class="r">Hospital Ops</div></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-toggle"><svg class="ic ic-18"><use href="#i-menu"/></svg></div>
+      <div class="breadcrumb"><span class="crumb">Hospital Operations</span><span class="sep">/</span><span class="crumb active">Kërkesë Stoku</span></div>
+      <input class="topbar-search" placeholder="Kërko...">
+      <button class="topbar-btn"><svg class="ic ic-14"><use href="#i-plus"/></svg> Kërkesë e Re</button>
+    </div>
+
+    <div class="content">
+
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:14px">
+        <div>
+          <h1 style="font-size:22px;font-weight:700">Operacionet Spitalore</h1>
+          <div style="color:var(--ink-gray-5);font-size:13px;margin-top:4px">Kërkesat për stok nga repartet spitalore dhe ndjekja e porosive.</div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="stat-grid cols-4">
+        <div class="stat-card" style="border-left:3px solid var(--accent-blue)"><div class="label">Kërkesa aktive</div><div class="value">14</div><div class="change up">6 të reja sot</div></div>
+        <div class="stat-card" style="border-left:3px solid var(--warning-amber)"><div class="label">Në përgatitje</div><div class="value">4</div><div class="change" style="color:var(--warning-amber)">po përgatiten</div></div>
+        <div class="stat-card" style="border-left:3px solid var(--success-green)"><div class="label">Dërguara sot</div><div class="value">9</div><div class="change up">99% në kohë</div></div>
+        <div class="stat-card" style="border-left:3px solid #db2777"><div class="label">Prioritet i lartë</div><div class="value">3</div><div class="change" style="color:var(--danger-red)">emergjente</div></div>
+      </div>
+
+      <!-- Stock requests -->
+      <div class="card-box" style="background:var(--surface-white);border:1px solid var(--outline-gray-1);border-radius:8px;padding:0;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--outline-gray-1);display:flex;align-items:center;justify-content:space-between">
+          <div class="card-title" style="margin:0">Kërkesat për Stok</div>
+          <div class="chip-row" style="margin:0">
+            <span class="chip active">Të gjitha (14)</span>
+            <span class="chip">Emergjente (3)</span>
+            <span class="chip">Në pick (4)</span>
+            <span class="chip">Dërguar (7)</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>Nr. Kërkesa</th><th>Reparti</th><th>Artikuj</th><th>Prioritet</th><th>Progress</th><th>Statusi</th><th>Data</th></tr></thead>
+            <tbody id="reqBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+const REQ = [
+  ['SR-2026-0089','Salla Operative 1','Maska F-2, Doreza, Spirose Sterile','Lart','45','req','11 Gusht 14:20'],
+  ['SR-2026-0088','Reparti Emergjent','Burgesoni, Fletë EKG, Satër Oksigjeni','Lart','80','pick','11 Gusht 13:45'],
+  ['SR-2026-0087','ICU','Reagjentë Laboratorike (PCR set)','Mesëm','25','pick','11 Gusht 12:30'],
+  ['SR-2026-0086','Salla Operative 3','Fije Suture, Yndyrë Sterile','Lart','100','sent','11 Gusht 11:15'],
+  ['SR-2026-0085','Pediatría','Vaksinë BCG, Shiringa 2ml','Mesëm','200','sent','11 Gusht 10:00'],
+  ['SR-2026-0084','Klinika VIP','Fije Perfuzioni, Kateter','Ulët','40','req','10 Gusht 16:20'],
+];
+document.getElementById('reqBody').innerHTML = REQ.map(r=>{
+  const pri = r[3]==='Lart'?'<span class="pill red">'+r[3]+'</span>':r[3]==='Mesëm'?'<span class="pill amber">'+r[3]+'</span>':'<span class="pill slate">'+r[3]+'</span>';
+  const st = {req:'<span class="ord-status req"><span class="dot blue"></span>Kërkuar</span>',
+              pick:'<span class="ord-status pick"><span class="dot amber"></span>Në përgatitje</span>',
+              sent:'<span class="ord-status sent"><span class="dot green"></span>Dërguar</span>'}[r[5]];
+  const pct = r[5]==='sent'?'100':r[5]==='pick'?'60':'20';
+  return `<tr>
+    <td class="mono">${r[0]}</td>
+    <td><b>${r[1]}</b></td>
+    <td style="color:var(--ink-gray-5);max-width:280px">${r[2]}</td>
+    <td>${pri}</td>
+    <td style="min-width:120px"><div style="font-size:11px;color:var(--ink-gray-5)">${pct}%</div><div class="progress-mini"><div class="progress-mini-fill" style="width:${pct}%"></div></div></td>
+    <td>${st}</td>
+    <td class="mono" style="color:var(--ink-gray-5)">${r[6]}</td>
+  </tr>`;
+}).join('');
+
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+}));
+</script>
+</body>
+</html>

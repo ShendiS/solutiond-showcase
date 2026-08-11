@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenBMS — Harta e Ndërtesës</title>
+<link rel="stylesheet" href="../assets/shared.css">
+<link rel="stylesheet" href="../assets/bms.css">
+<style>
+  body{background:#f4f5f7}
+  .bms-wrap{display:grid; grid-template-columns:1fr 360px; gap:18px; padding:18px; max-width:1500px; margin:0 auto; align-items:flex-start}
+  @media(max-width:1100px){.bms-wrap{grid-template-columns:1fr}}
+
+  .bms-head{
+    grid-column:1/-1;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:14px 18px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .bms-head .logo{width:38px;height:38px;border-radius:9px;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .bms-head .titles .t1{font-size:15px;font-weight:700}
+  .bms-head .titles .t2{font-size:12px;color:var(--muted-foreground)}
+  .bms-head .mqtt{
+    margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+    padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;
+    background:#dcfce7;color:#15803d;
+  }
+  .bms-head .btn{margin-left:8px}
+
+  /* Stat strip */
+  .stat-strip{grid-column:1/-1; display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+  @media(max-width:700px){.stat-strip{grid-template-columns:repeat(2,1fr)}}
+  .stat-pill{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 14px; display:flex;align-items:center;gap:10px}
+  .stat-pill .ic-wrap{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .stat-pill .v{font-size:20px;font-weight:700;line-height:1}
+  .stat-pill .l{font-size:11px;color:var(--muted-foreground);margin-top:2px}
+
+  /* Floor plan card */
+  .map-card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:14px; overflow:hidden;
+  }
+  .map-card .mc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .map-card .mc-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .map-card .mc-legend{display:flex;gap:10px;font-size:11px;color:var(--muted-foreground)}
+  .map-card .mc-legend .lg{display:flex;align-items:center;gap:4px}
+  .map-card .mc-legend .sq{width:11px;height:11px;border-radius:2px;border:1.5px solid}
+
+  .map-svg{display:block;width:100%;height:auto;background:#fafbfc;border-radius:8px}
+  .room-poly{cursor:pointer; transition:filter .12s, opacity .12s}
+  .room-poly:hover{filter:brightness(1.06)}
+  .room-poly.selected{stroke-width:4 !important}
+  .room-label{font-size:11px;font-weight:600;fill:#1f2937;text-anchor:middle;pointer-events:none}
+  .room-sub{font-size:9px;fill:#6a7384;text-anchor:middle;pointer-events:none}
+  .room-status-dot{pointer-events:none}
+
+  /* Detail panel */
+  .detail-panel{position:sticky; top:18px; display:flex; flex-direction:column; gap:14px}
+  .dp-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .dp-empty{text-align:center;color:var(--muted-foreground);font-size:13px;padding:40px 16px}
+  .dp-empty svg{margin-bottom:10px;opacity:.4}
+  .dp-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .dp-head .title{font-size:16px;font-weight:700;flex:1}
+  .dp-head .status{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+  .equip-list{display:flex;flex-direction:column;gap:8px}
+  .equip-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:#f8f9fb;border-radius:8px;border:1px solid #eef0f3}
+  .equip-row .eic{width:30px;height:30px;border-radius:7px;background:white;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .equip-row .ename{flex:1;font-size:13px;font-weight:600}
+  .equip-row .ename .edesc{font-weight:400;font-size:11px;color:var(--muted-foreground);margin-top:1px}
+  .equip-row .eval{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;min-width:60px}
+  .equip-row .eunit{font-size:10px;color:var(--muted-foreground)}
+
+  /* VIP patient panel (highlights premium room) */
+  .vip-panel{
+    background:linear-gradient(135deg,#fdf2f8,#eff6ff);
+    border:1px solid #fbcfe8; border-radius:12px; padding:16px;
+  }
+  .vip-panel .vp-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#be185d;background:#fce7f1;padding:2px 8px;border-radius:10px;margin-bottom:10px}
+  .vip-panel .vp-pat{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .vip-panel .vp-pat .pav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#e11d6b,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .vip-panel .vp-pat .pn{font-weight:700;font-size:14px}
+  .vip-panel .vp-pat .pm{font-size:11px;color:var(--muted-foreground)}
+  .vip-panel .vp-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-top:1px solid rgba(0,0,0,.05)}
+  .vip-panel .vp-row:first-of-type{border-top:none}
+  .vip-panel .vp-row .k{color:var(--muted-foreground)}
+  .vip-panel .vp-row .v{font-weight:600}
+  .vip-panel .vp-cta{display:block;margin-top:12px;text-align:center;padding:8px;background:#e11d6b;color:white;border-radius:8px;font-size:12px;font-weight:600}
+  .vip-panel .vp-cta:hover{background:#be185d}
+
+  .alarms{display:flex;flex-direction:column;gap:6px}
+  .alarm{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:12px}
+  .alarm.warn{background:#fef3c7;color:#92400e}
+  .alarm.err{background:#fee2e2;color:#b91c1c}
+  .alarm.ok{background:#dcfce7;color:#15803d}
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><svg class="ic ic-14"><use href="#i-arrow-left"/></svg> Paneli Kryesor</a>
+
+<div class="bms-wrap">
+
+  <!-- Header -->
+  <div class="bms-head">
+    <div class="logo">DM</div>
+    <div class="titles">
+      <div class="t1">OpenBMS Supervisor</div>
+      <div class="t2">Division Medical · Harta e Ndërtesës · Etazhi 3</div>
+    </div>
+    <span class="mqtt"><svg class="ic ic-14"><use href="#i-wifi"/></svg> I lidhur · MQTT</span>
+    <a class="btn" href="designer.html"><svg class="ic ic-14"><use href="#i-cpu"/></svg> Dizajneri i Kontrollit</a>
+  </div>
+
+  <!-- Stat strip -->
+  <div class="stat-strip">
+    <div class="stat-pill"><div class="ic-wrap" style="background:#dcfce7;color:#15803d"><svg class="ic ic-18"><use href="#i-shield-check"/></svg></div><div><div class="v">142</div><div class="l">Pajisje Online</div></div></div>
+    <div class="stat-pill"><div class="ic-wrap" style="background:#dbeafe;color:#1d4ed8"><svg class="ic ic-18"><use href="#i-activity"/></svg></div><div><div class="v">7</div><div class="l">Sisteme Aktive</div></div></div>
+    <div class="stat-pill"><div class="ic-wrap" style="background:#fef3c7;color:#92400e"><svg class="ic ic-18"><use href="#i-alert-triangle"/></svg></div><div><div class="v">3</div><div class="l">Alarme aktive</div></div></div>
+    <div class="stat-pill"><div class="ic-wrap" style="background:#fee2e2;color:#b91c1c"><svg class="ic ic-18"><use href="#i-alert-triangle"/></svg></div><div><div class="v">1</div><div class="l">Prioritet i lartë</div></div></div>
+    <div class="stat-pill"><div class="ic-wrap" style="background:#ede9fe;color:#6d28d9"><svg class="ic ic-18"><use href="#i-gauge"/></svg></div><div><div class="v">94%</div><div class="l">Efikasiteti</div></div></div>
+  </div>
+
+  <!-- Floor plan -->
+  <div class="map-card">
+    <div class="mc-head">
+      <div class="mc-title"><svg class="ic ic-18"><use href="#i-map-pin"/></svg> Harta e Etazhit</div>
+      <div class="mc-legend">
+        <span class="lg"><span class="sq" style="background:#d1fae5;border-color:#10b981"></span>OK</span>
+        <span class="lg"><span class="sq" style="background:#fef3c7;border-color:#d97706"></span>Vërejtje</span>
+        <span class="lg"><span class="sq" style="background:#fee2e2;border-color:#dc2626"></span>Alarm</span>
+        <span class="lg"><span class="sq" style="background:#fce7f3;border-color:#e11d6b"></span>VIP</span>
+      </div>
+    </div>
+    <svg class="map-svg" id="mapSvg" viewBox="0 0 880 560" preserveAspectRatio="xMidYMid meet"></svg>
+    <div style="margin-top:8px;font-size:11px;color:var(--muted-foreground);display:flex;align-items:center;gap:6px">
+      <svg class="ic ic-12"><use href="#i-eye"/></svg> Klikoni mbi një dhomë për të parë pajisjet dhe leximet
+    </div>
+  </div>
+
+  <!-- Right: detail + VIP + alarms -->
+  <div class="detail-panel">
+
+    <div class="dp-card" id="detailCard">
+      <div class="dp-empty">
+        <svg class="ic ic-28"><use href="#i-map-pin"/></svg>
+        <div>Zgjidhni një dhomë nga hartë</div>
+        <div style="font-size:11px;margin-top:6px">për të parë pajisjet BMS</div>
+      </div>
+    </div>
+
+    <!-- VIP panel -->
+    <div class="vip-panel" id="vipPanel" style="display:none">
+      <div class="vp-tag"><svg class="ic ic-12"><use href="#i-user"/></svg> Suita VIP · Dhomë 312</div>
+      <div class="vp-pat">
+        <div class="pav">LB</div>
+        <div style="flex:1">
+          <div class="pn">Lulzim Berisha</div>
+          <div class="pm">68 vjet · Kardiologji · Në recoverim</div>
+        </div>
+      </div>
+      <div class="vp-row"><span class="k">Mjeku</span><span class="v">Dr. Arbër Hoxha</span></div>
+      <div class="vp-row"><span class="k">Temperatura e dhomës</span><span class="v">22.4°C</span></div>
+      <div class="vp-row"><span class="k">Ndriçimi</span><span class="v">45% (Calm)</span></div>
+      <div class="vp-row"><span class="k">AHU-1 (furnizim)</span><span class="v">22.0°C · 50% RH</span></div>
+      <a class="vp-cta" href="../pms/room-panel.html">Hap Panelin e Pacientit →</a>
+    </div>
+
+    <!-- Alarms -->
+    <div class="dp-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px"><svg class="ic ic-16"><use href="#i-alert-triangle"/></svg> Alarmet e fundit</div>
+        <span class="badge-s warn">3 aktive</span>
+      </div>
+      <div class="alarms">
+        <div class="alarm err"><svg class="ic ic-14"><use href="#i-alert-triangle"/></svg><b>FILTER ΔP AHU-2</b> · 620 Pa · kërkon zëvendësim</div>
+        <div class="alarm warn"><svg class="ic ic-14"><use href="#i-alert-triangle"/></svg><b>T-Supply AHU-5</b> · 23.4°C (SP 22.0) · devijim</div>
+        <div class="alarm warn"><svg class="ic ic-14"><use href="#i-alert-triangle"/></svg><b>HP-2</b> · ka kaluar në lead (HP-1 në lag)</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/icons.js"></script>
+<script>
+// ===== Room data: polygon points, name, status, equipment =====
+const ROOMS = [
+  // OR block (center)
+  {id:'OR-1', name:'Salla Op. 1', sub:'ISO 10.000', status:'ok', pts:'300,120 440,120 440,240 300,240',
+   equip:[['i-thermometer','T-Furnizimi','AHU-1 · SP 20.0°C','20.2','°C'],['i-droplet','RH-Furnizimi','Duct','50','%'],['i-gauge','ΔP Dhomë','vs korridor','45','Pa'],['i-activity','HEPA ΔP','Filter','380','Pa'],['i-cpu','CAV-1','Flow','5400','m³/h']]},
+  {id:'OR-2', name:'Salla Op. 2', sub:'ISO 10.000', status:'ok', pts:'445,120 585,120 585,240 445,240',
+   equip:[['i-thermometer','T-Furnizimi','AHU-2 · SP 19.0°C','19.4','°C'],['i-droplet','RH','Duct','49','%'],['i-gauge','ΔP Dhomë','vs korridor','46','Pa'],['i-activity','HEPA ΔP','620 Pa (lart!)','620','Pa']]},
+  {id:'OR-3', name:'Salla Op. 3', sub:'ISO 10.000', status:'ok', pts:'590,120 730,120 730,240 590,240',
+   equip:[['i-thermometer','T-Furnizimi','AHU-3','19.8','°C'],['i-droplet','RH','Duct','51','%'],['i-gauge','ΔP Dhomë','vs korridor','45','Pa']]},
+  {id:'OR-4', name:'Salla Op. 4', sub:'ISO 10.000', status:'warn', pts:'300,250 440,250 440,370 300,370',
+   equip:[['i-thermometer','T-Furnizimi','AHU-4 (devijim!)','23.4','°C'],['i-droplet','RH','Duct','52','%'],['i-gauge','ΔP Dhomë','vs korridor','44','Pa']]},
+  {id:'PREP', name:'Përgatitje', sub:'ISO 100.000', status:'ok', pts:'445,250 585,250 585,370 445,370',
+   equip:[['i-thermometer','T','AHU-5','22.6','°C'],['i-droplet','RH','Duct','50','%'],['i-snowflake','CAV','Flow','3200','m³/h']]},
+  {id:'ICU', name:'ICU', sub:'Intensiv', status:'ok', pts:'590,250 730,250 730,370 590,370',
+   equip:[['i-thermometer','T-Dhomë','AHU-6','21.8','°C'],['i-droplet','RH','Wall','52','%'],['i-gauge','ΔP','vs korridor','30','Pa'],['i-activity','O₂','Manifold','4.2','bar']]},
+  // Corridor
+  {id:'CORR', name:'Korridori i Pastër', sub:'Circulation', status:'ok', pts:'300,380 730,380 730,420 300,420',
+   equip:[['i-thermometer','T','AHU-7','22.1','°C'],['i-gauge','ΔP','+15 vs gjer.','15','Pa']]},
+  // VIP suite (highlighted)
+  {id:'VIP-312', name:'Suita VIP 312', sub:'Premium', status:'vip', pts:'740,120 870,120 870,280 740,280',
+   equip:[['i-thermometer','T-Dhomë','AHU-7 · VIP','22.4','°C'],['i-lightbulb','Ndriçimi','Calm scene','45','%'],['i-thermometer','T-Uji','Floor heating','24.0','°C'],['i-activity','AHU-7 VIP','Box','1200','m³/h']],
+    vip:true},
+  // Plant room (bottom)
+  {id:'PLANT', name:'Dhoma e Plantit', sub:'HP-1/2 · AHU', status:'warn', pts:'300,430 600,430 600,540 300,540',
+   equip:[['i-zap','HP-1 Heat/Cool','Lead','180/205','kW'],['i-zap','HP-2 Heat/Cool','Lag (gjendje)','180/205','kW'],['i-snowflake','CHW Supply','7/12°C','7.2','°C'],['i-thermometer','HW Supply','80/60°C','79.5','°C'],['i-activity','CHW Pump','Run','100','%']]},
+  {id:'MEP', name:'MEP Shaft', sub:'Elec · Gas', status:'ok', pts:'610,430 730,430 730,540 610,540',
+   equip:[['i-zap','Elektrike DB','Main','400','V'],['i-droplet','O₂ Manifold','Medical','4.2','bar'],['i-droplet','Vakuum','Medical','-0.7','bar']]},
+  {id:'IT', name:'IT / Server', sub:'BMS Core', status:'ok', pts:'740,430 870,430 870,540 740,540',
+   equip:[['i-cpu','BMS Server','Tier 1','UPS','OK'],['i-wifi','MQTT Broker','tcp/1883','12','clients']]},
+  // Patient ward (left)
+  {id:'WARD-A', name:'Rep. Pacientëve A', sub:'3 dhoma', status:'ok', pts:'40,120 290,120 290,250 40,250',
+   equip:[['i-thermometer','T-Mes.','Fan coil','22.5','°C'],['i-bed','Dhoma 301-303','3 shtresa','3/3','shtreter']]},
+  {id:'WARD-B', name:'Rep. Pacientëve B', sub:'3 dhoma', status:'ok', pts:'40,260 290,260 290,370 40,370',
+   equip:[['i-thermometer','T-Mes.','Fan coil','22.7','°C'],['i-bed','Dhoma 304-306','3 shtresa','2/3','shtreter']]},
+  {id:'STAFF', name:'Stafi', sub:'Dhoma pushimi', status:'ok', pts:'40,380 290,380 290,420 40,420',
+   equip:[['i-thermometer','T','Fan coil','23.0','°C']]},
+];
+
+const STATUS_FILL = {ok:'#d1fae5', warn:'#fef3c7', err:'#fee2e2', vip:'#fce7f3'};
+const STATUS_STROKE = {ok:'#10b981', warn:'#d97706', err:'#dc2626', vip:'#e11d6b'};
+const STATUS_LABEL = {ok:'OK', warn:'Vërejtje', err:'Alarm', vip:'VIP'};
+
+function renderMap(){
+  const svg = document.getElementById('mapSvg');
+  let html = '';
+  // building outline
+  html += `<rect x="30" y="90" width="840" height="470" fill="#fbfcfd" stroke="#cbd5e1" stroke-width="3" rx="6"/>`;
+  // zone labels
+  html += `<text x="165" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#6a7384" letter-spacing="1.5">REPARTI PACIENTËVE</text>`;
+  html += `<text x="515" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#6a7384" letter-spacing="1.5">DEPARTAMENTI OPERATIV</text>`;
+  html += `<text x="805" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#be185d" letter-spacing="1.5">SUITA VIP</text>`;
+  html += `<text x="450" y="565" text-anchor="middle" font-size="11" font-weight="700" fill="#6a7384" letter-spacing="1.5">PLANT / MEP / IT</text>`;
+
+  ROOMS.forEach(r=>{
+    const fill = STATUS_FILL[r.status], stroke = STATUS_STROKE[r.status];
+    // centroid for label
+    const pts = r.pts.split(' ').map(p=>p.split(',').map(Number));
+    const cx = pts.reduce((s,p)=>s+p[0],0)/pts.length;
+    const cy = pts.reduce((s,p)=>s+p[1],0)/pts.length;
+    html += `<polygon class="room-poly" data-id="${r.id}" points="${r.pts}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    // name label
+    html += `<text class="room-label" x="${cx}" y="${cy-4}">${r.name}</text>`;
+    html += `<text class="room-sub" x="${cx}" y="${cy+10}">${r.sub}</text>`;
+    // status dot top-right of bbox
+    const maxX = Math.max(...pts.map(p=>p[0])), minY = Math.min(...pts.map(p=>p[1]));
+    html += `<circle class="room-status-dot" cx="${maxX-12}" cy="${minY+12}" r="4" fill="${stroke}"/>`;
+  });
+  svg.innerHTML = html;
+
+  svg.querySelectorAll('.room-poly').forEach(p=>{
+    p.addEventListener('click', ()=>selectRoom(p.dataset.id));
+  });
+}
+
+function selectRoom(id){
+  const r = ROOMS.find(x=>x.id===id);
+  if(!r) return;
+  // highlight
+  document.querySelectorAll('.room-poly').forEach(p=>p.classList.remove('selected'));
+  document.querySelector(`.room-poly[data-id="${id}"]`).classList.add('selected');
+
+  // detail card
+  const dc = document.getElementById('detailCard');
+  const statusCls = r.status==='vip' ? 'style="background:#fce7f3;color:#be185d"' :
+                    r.status==='warn' ? 'style="background:#fef3c7;color:#92400e"' :
+                    r.status==='err' ? 'style="background:#fee2e2;color:#b91c1c"' :
+                    'style="background:#dcfce7;color:#15803d"';
+  dc.innerHTML = `
+    <div class="dp-head">
+      <div class="title">${r.name}</div>
+      <span class="status" ${statusCls}>${STATUS_LABEL[r.status]}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted-foreground);margin-bottom:12px">${r.sub}</div>
+    <div class="equip-list">
+      ${r.equip.map(e=>`
+        <div class="equip-row">
+          <div class="eic"><svg class="ic ic-18"><use href="#${e[0]}"/></svg></div>
+          <div class="ename">${e[1]}<div class="edesc">${e[2]}</div></div>
+          <div><div class="eval">${e[3]}</div><div class="eunit" style="text-align:right">${e[4]}</div></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // VIP panel
+  document.getElementById('vipPanel').style.display = r.vip ? '' : 'none';
+}
+
+renderMap();
+// Pre-select the VIP room to showcase the panel
+setTimeout(()=>selectRoom('VIP-312'), 300);
+</script>
+
+</body>
+</html>
